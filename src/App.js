@@ -7,7 +7,10 @@ import { Button, Form, List, Container, Header } from 'semantic-ui-react';
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [username, setUsername] = useState('');
   const [user, setUser] = useState(null);
+  const [isUsernameSet, setIsUsernameSet] = useState(false);
+  const [showUsernameInput, setShowUsernameInput] = useState(false);
 
   useEffect(() => {
     const firebaseConfig = {
@@ -29,6 +32,17 @@ const Chat = () => {
     });
 
     firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const userRef = firebase.database().ref(`users/${user.uid}`);
+        userRef.once('value').then((snapshot) => {
+          if (snapshot.val().username) {
+            setUsername(snapshot.val().username);
+            setIsUsernameSet(true);
+          } else {
+            setShowUsernameInput(true);
+          }
+        });
+      }
       setUser(user);
     });
   }, []);
@@ -38,21 +52,31 @@ const Chat = () => {
     if (!user) {
       return alert('You must sign in first');
     }
+    if (!username && !isUsernameSet && showUsernameInput) {
+      return alert('You must enter a username');
+    }
     if (!input) {
       return alert('You must enter a message');
     }
-    const database = firebase.database();
-    const messagesRef = database.ref('messages');
-
+  
+    const userRef = firebase.database().ref(`users/${user.uid}`);
+    const messagesRef = firebase.database().ref('messages');
+  
+    userRef.once('value').then((snapshot) => {
+      if (snapshot.val().username !== username) {
+        userRef.set({ username });
+      }
+    });
+  
     messagesRef.push({
       content: input,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
-      sender: user.displayName,
+      sender: username,
     });
-
+  
     setInput('');
   };
-
+    
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
@@ -76,19 +100,21 @@ const Chat = () => {
     <Container text style={{marginTop: '10px'}}>
       <Header as='h2'>Chat</Header>
       {!user && (
-        <Button onClick={signInWithGoogle} size="big" primary style={{marginBottom: '10px'}}>
-          Sign in with Google
-        </Button>
+        <Button onClick={signInWithGoogle} size="small" primary style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
+        <span>Sign in with</span> 
+        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" style={{ width: '50px', height: 'auto', marginRight: '5px' }} />
+        </Button>      
       )}
       {user && (
-        <Fragment>
-          <Header as='h3'>Welcome, {user.email}</Header>
-          <Button onClick={signOut} size="big" style={{marginBottom: '10px'}}>
-            Sign out
-          </Button>
-        </Fragment>
-      )}
-      <Form onSubmit={submitMessage} style={{marginTop: '10px'}}>
+  <Fragment>
+    <Header as='h3'>Welcome, {username || user.email}</Header>
+    <Form onSubmit={submitMessage} style={{marginTop: '10px'}}>
+        <Form.Input
+          placeholder="Enter your username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{marginBottom: '10px'}}
+        />
         <Form.Input
           placeholder="Enter a message"
           value={input}
@@ -97,6 +123,11 @@ const Chat = () => {
         />
         <Button type="submit">Submit</Button>
       </Form>
+      <Button onClick={signOut} size="big" style={{marginBottom: '10px'}}>
+      Sign out
+    </Button>
+  </Fragment>
+)}
       <List style={{marginTop: '10px'}}>
         {messages.map((message, i) => (
           <List.Item key={i}>
