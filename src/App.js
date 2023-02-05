@@ -103,8 +103,7 @@ const Chat = () => {
       <Header as='h2'>Chat</Header>
       {!user && (
         <Button onClick={signInWithGoogle} size="small" primary style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
-        <span>Sign in with</span> 
-        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" style={{ width: '50px', height: 'auto', marginRight: '5px' }} />
+        <span> Sign in with Google </span> 
         </Button>      
       )}
       {user && (
