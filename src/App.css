@@ -36,3 +36,75 @@
     transform: rotate(360deg);
   }
 }
+.Container {
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 100vh;
+}
+
+.Form {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.Form input {
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 16px;
+  width: 70%;
+  margin-right: 10px;
+  outline: none;
+}
+
+.Form button {
+  background-color: #4267B2;
+  border: none;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+}
+
+.List {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 50%;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+.List .List.Item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.List .List.Item .List.Header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.List .List.Item .List.Description {
+  font-size: 16px;
+  color: #333;
+}
+
+.Dropdown {
+  margin-top: 20px;
+}
