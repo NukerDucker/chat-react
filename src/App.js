@@ -21,7 +21,9 @@ const Chat = () => {
       storageBucket: "cholechatweb-f3f7c.appspot.com",
       messagingSenderId: "1042820584496",
       appId: "1:1042820584496:web:25a7988ab8242cd4f889f5",
+      
     };
+    
     firebase.initializeApp(firebaseConfig);
 
     const database = firebase.database();
@@ -88,7 +90,7 @@ const Chat = () => {
         console.error(error);
       });
   };
-
+  
   const signOut = () => {
     firebase.auth().signOut().then(() => {
       setUser(null);
@@ -107,7 +109,7 @@ const Chat = () => {
       )}
       {user && (
   <Fragment>
-    <Header as='h3'>Welcome, {username || user.email}</Header>
+    <Header as='h3'>Welcome, { username || user.email}</Header>
     <Form onSubmit={submitMessage} style={{marginTop: '10px'}}>
         <Form.Input
           placeholder="Enter your username"
